@@ -33,6 +33,7 @@ import { MapSearchService } from './services/map-search.service';
 import { SatelliteViewModel } from '../satellites/interfaces/satellite-view.interface';
 import { YMapSatelliteLayerDirective } from './directives/ymap-satelite-layer.directive';
 import { YMapTileDataSourceDirective } from './directives/y-map-tile-data-source.directive';
+import { bbox } from '@turf/turf';
 @Component({
     selector: 'app-map',
     standalone: true,
@@ -85,6 +86,12 @@ export class MapComponent {
     public searchMarker?: any;
     public fullscreenClass = 'layout-map-container';
     public satelliteGraphics: any[] = [];
+    private readonly DEFAULT_POLYGON_STYLE = {
+        strokeColor: '#2563EB',
+        strokeWidth: 2,
+        strokeOpacity: 0.7,
+        fillOpacity: 0.08
+    };
 
     public osmSourceProps = {
         id: 'osm-source',
@@ -346,7 +353,6 @@ export class MapComponent {
                         }
                     })
                 );
-
                 this.cdr.markForCheck();
 
             });
@@ -502,15 +508,13 @@ export class MapComponent {
 
                         style: {
                             stroke: [{
-                                color: '#3B82F6',
-                                width:
-                                    f.properties?.['stroke-width'] ?? 2,
-                                opacity:
-                                    f.properties?.['stroke-opacity'] ?? 0.8
+                                color: this.DEFAULT_POLYGON_STYLE.strokeColor,
+                                width: this.DEFAULT_POLYGON_STYLE.strokeWidth,
+                                opacity: this.DEFAULT_POLYGON_STYLE.strokeOpacity
                             }],
                             fill: this.withAlpha(
-                                '#3B82F6',
-                                f.properties?.['fill-opacity'] ?? 0.3
+                                this.DEFAULT_POLYGON_STYLE.strokeColor,
+                                this.DEFAULT_POLYGON_STYLE.fillOpacity
                             )
                         }
                     };
@@ -571,6 +575,45 @@ export class MapComponent {
         }
 
         return geometry;
+    }
+
+
+    private buildBoundsFromGeoJSON(
+        input:
+            | GeoJSON.Feature
+            | GeoJSON.Feature[]
+            | GeoJSON.FeatureCollection
+    ): [[number, number], [number, number]] | null {
+
+        if (!input) return null;
+
+        let featureCollection: GeoJSON.FeatureCollection;
+
+        if (Array.isArray(input)) {
+            if (!input.length) return null;
+
+            featureCollection = {
+                type: 'FeatureCollection',
+                features: input
+            };
+        }
+        else if (input.type === 'FeatureCollection') {
+            if (!input.features?.length) return null;
+            featureCollection = input;
+        }
+        else {
+            featureCollection = {
+                type: 'FeatureCollection',
+                features: [input]
+            };
+        }
+
+        const [minX, minY, maxX, maxY] = bbox(featureCollection);
+
+        return [
+            [minX, minY],
+            [maxX, maxY]
+        ];
     }
 
 
