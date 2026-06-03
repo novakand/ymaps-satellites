@@ -145,12 +145,14 @@
                 *ngIf="sat.available"
                 value="Доступен"
                 severity="success"
+                [badgeSize]="isSmallScreen ? 'small' : 'large'"
               />
 
               <p-badge
                 *ngIf="sat.available === false"
                 value="Не доступен"
                 severity="danger"
+                [badgeSize]="isSmallScreen ? 'small' : 'large'"
               />
 
             </div>

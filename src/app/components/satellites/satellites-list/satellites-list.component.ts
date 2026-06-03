@@ -366,13 +366,10 @@ export class SatellitesListComponent implements OnInit {
     ): void {
 
         event.stopPropagation();
-
-        // Сначала делаем спутник активным
         this.selectSatellite(
             satellite
         );
 
-        // Если покрытие уже показано — скрываем
         if (
             this.visibleSatellites.has(
                 satellite.key
@@ -383,12 +380,10 @@ export class SatellitesListComponent implements OnInit {
 
             this._mapService
                 .clearCoverageFeatures();
-
             return;
 
         }
 
-        // Разрешаем отображать только один спутник
         this.visibleSatellites.clear();
 
         this.visibleSatellites.add(
@@ -426,62 +421,6 @@ export class SatellitesListComponent implements OnInit {
             });
 
     }
-
-
-    // public toggleCoverage(
-    //     satellite: SatelliteViewModel,
-    //     event: Event
-    // ): void {
-
-    //     event.stopPropagation();
-
-    //     if (
-    //         this.visibleSatellites.has(
-    //             satellite.key
-    //         )
-    //     ) {
-
-    //         this.visibleSatellites.delete(
-    //             satellite.key
-    //         );
-
-    //         this._mapService.clearCoverageFeatures();
-
-    //         return;
-
-    //     }
-
-    //     this.visibleSatellites.add(
-    //         satellite.key
-    //     );
-
-    //     const requests =
-    //         satellite.layers.map(
-    //             layer =>
-    //                 this.satellitesService
-    //                     .getCoverage(layer.file)
-    //         );
-
-    //     forkJoin(requests)
-    //         .pipe(
-
-    //             map(collections =>
-    //                 collections.flatMap(
-    //                     fc => fc.features
-    //                 )
-    //             )
-
-    //         )
-    //         .subscribe(features => {
-
-    //             this._mapService
-    //                 .setCoverageFeatures(
-    //                     features
-    //                 );
-
-    //         });
-
-    // }
 
     value: any;
 
