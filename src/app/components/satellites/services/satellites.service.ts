@@ -12,6 +12,13 @@ export class SatellitesService {
         private readonly http: HttpClient
     ) { }
 
+
+    private readonly coverageCache =
+        new Map<
+            string,
+            Observable<GeoJSON.FeatureCollection>
+        >();
+
     private readonly BASE =
         'assets/data/satellites';
 
@@ -26,7 +33,7 @@ export class SatellitesService {
             .pipe(
                 shareReplay({
                     bufferSize: 1,
-                    refCount: true
+                    refCount: false
                 })
             );
 
@@ -35,23 +42,45 @@ export class SatellitesService {
     }
 
 
-    getBeamCoverage(
+    public getBeamCoverage(
         layer: SatelliteIndexItem
     ): Observable<GeoJSON.FeatureCollection> {
 
-        return this.http.get<GeoJSON.FeatureCollection>(
-            `${this.BASE}/${layer.file}`
+        return this.getCoverage(
+            layer.file
         );
 
     }
 
-    getCoverage(
+    public getCoverage(
         file: string
     ): Observable<GeoJSON.FeatureCollection> {
 
-        return this.http.get<GeoJSON.FeatureCollection>(
-            `${this.BASE}/${file}`
+        const cached =
+            this.coverageCache.get(file);
+
+        if (cached) {
+            return cached;
+        }
+
+        const request =
+            this.http
+                .get<GeoJSON.FeatureCollection>(
+                    `${this.BASE}/${file}`
+                )
+                .pipe(
+                    shareReplay({
+                        bufferSize: 1,
+                        refCount: false
+                    })
+                );
+
+        this.coverageCache.set(
+            file,
+            request
         );
+
+        return request;
 
     }
 

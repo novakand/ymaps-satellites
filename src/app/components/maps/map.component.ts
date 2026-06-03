@@ -373,8 +373,9 @@ export class MapComponent {
                 takeUntil(this._destroy$)
             )
             .subscribe(features => {
+                console.log('satelliteGraphics')
                 this.satelliteGraphics = features;
-                this.cdr.markForCheck();
+                this.cdr.detectChanges();
             });
 
     }
