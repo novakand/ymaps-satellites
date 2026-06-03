@@ -27,7 +27,7 @@
                 ]
               }
             },
-            "outputPath": "dist/ymaps-satellites ",
+            "outputPath": "dist/ymaps-satellites",
             "index": "src/index.html",
             "baseHref": "/",
             "browser": "src/main.ts",
@@ -53,8 +53,8 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "/ymaps-satellites /",
-              "deployUrl": "/ymaps-satellites /",
+              "baseHref": "/ymaps-satellites/",
+              "deployUrl": "/ymaps-satellites/",
               "budgets": [
                 {
                   "type": "initial",
