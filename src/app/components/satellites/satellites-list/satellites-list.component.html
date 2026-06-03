@@ -139,7 +139,7 @@
 
             </div>
 
-            <div class="w-16 sm:w-32 flex justify-center shrink-0">
+            <div class="w-14 sm:w-32 flex justify-center shrink-0">
 
               <p-badge
                 *ngIf="sat.available"
@@ -150,7 +150,7 @@
 
               <p-badge
                 *ngIf="sat.available === false"
-                value="Не доступен"
+                [value]="isSmallScreen ? 'Нет' : 'Не доступен'"
                 severity="danger"
                 [badgeSize]="isSmallScreen ? 'small' : 'large'"
               />
