@@ -88,7 +88,7 @@ export class MapComponent {
     public satelliteGraphics: any[] = [];
     private readonly DEFAULT_POLYGON_STYLE = {
         strokeColor: '#2563EB',
-        strokeWidth: 3,
+        strokeWidth: 4,
         strokeOpacity: 0.4,
         fillOpacity: 0.08
     };
@@ -150,26 +150,23 @@ export class MapComponent {
         source: 'scheme',
         visible: true,
         layers: {
-            ground: { zIndex: 1500 }, // дороги/вода
-            labels: { zIndex: 2000 }, // подписи
-            icons: { zIndex: 2050 }, // если нужны иконки
-            buildings: { zIndex: 1600 }, // если не скрываешь их заливку
-        },              // слой схемы рисуем
+            ground: { zIndex: 1500 },
+            labels: { zIndex: 2000 },
+            icons: { zIndex: 2050 },
+            buildings: { zIndex: 1600 },
+        },
         customization: {
             style: [
-                // убираем фон (земля, админ.подложки, транспортный фон и т.п.)
                 {
                     tags: { any: ['land', 'landcover', 'terrain', 'landscape', 'admin', 'transit'] },
                     elements: 'geometry', stylers: [{ opacity: 0 }]
                 },
 
-                // убираем заливки зданий (контуры/подписи останутся)
                 {
                     tags: { any: ['building'] },
                     elements: 'geometry', stylers: [{ opacity: 0 }]
                 },
 
-                // (опционально) подкраска дорог и воды под «гибрид»
                 // { tags: { any: ['road'] },  elements: 'geometry', stylers: [{ color: '#f2a33a' }] },
                 { tags: { any: ['water'] }, elements: 'geometry', stylers: [{ opacity: 0 }] },
             ]
@@ -532,8 +529,6 @@ export class MapComponent {
 
                 this.coverageFeatures =
                     data.features.map((f, index) => {
-                        console.log(f, index, 'jjjj')
-
                         const color =
                             data.multiColor
                                 ? this.getCoverageColor(index)
