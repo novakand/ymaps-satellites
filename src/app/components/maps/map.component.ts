@@ -388,7 +388,7 @@ export class MapComponent {
         ])
             .pipe(
 
-                auditTime(16),
+                debounceTime(0),
 
                 takeUntil(
                     this._destroy$
