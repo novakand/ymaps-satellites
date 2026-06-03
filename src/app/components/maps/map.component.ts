@@ -14,7 +14,7 @@ import { MapZoomControlComponent } from './components/map-zoom-control/map-zoom-
 import { MapFullscreenComponent } from './components/map-fullscreen/map-fullscreen.component';
 import { MapSettingsControlComponent } from './components/map-settings-control/map-settings-control.component';
 import { MapService } from './services/map-service';
-import { auditTime, BehaviorSubject, combineLatest, delay, distinctUntilChanged, Subject, takeUntil, tap } from 'rxjs';
+import { auditTime, BehaviorSubject, combineLatest, debounceTime, delay, distinctUntilChanged, Subject, takeUntil, tap } from 'rxjs';
 import { BBox } from 'geojson';
 import { MapEventManager } from './services/map-event-manager';
 import { YMapFeatureDirective } from './directives/y-map-feature.directive';
@@ -357,6 +357,7 @@ export class MapComponent {
 
         this.mapService.baseLayer$
             .pipe(
+                debounceTime(300),
                 distinctUntilChanged(),
                 takeUntil(this._destroy$)
             )

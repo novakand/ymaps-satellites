@@ -1,33 +1,11 @@
 <div class="c-map">
 
-
-  <!-- <map-sidebar
-    [isVisible]="isVisible"
-    (visibleChange)="onVisibleChangeSidebar($event)"
-  ></map-sidebar> -->
-
-
   <div class="c-map-toolbar-horizontal">
-
-
-    <!-- <map-search-control
-      (locationSelected)="onLocationSelected($event)"
-      (locationCleared)="onLocationCleared()"
-    >
-    </map-search-control> -->
-    <!-- <map-legend-control></map-legend-control> -->
     <div class="flex-fill"></div>
-
     <map-legend-control></map-legend-control>
-
   </div>
 
   <div class="c-map-toolbar-vertical">
-    <!-- <map-settings-control
-      (onChange)="onChangeSettings($event)"
-      [isShowSettingsControl]="true"
-    >
-    </map-settings-control> -->
     <div class="flex-fill"></div>
     <map-fullscreen-control
       *ngIf="isLargeScreen"
@@ -70,15 +48,17 @@
     </ng-container>
 
 
-    <ng-container *ngIf="basemap() === 'osm'">
+    <y-map-tile-data-source [props]="osmSourceProps">
+    </y-map-tile-data-source>
 
-      <y-map-tile-data-source [props]="osmSourceProps">
-      </y-map-tile-data-source>
+    <!-- появляется только при OSM -->
+    <y-map-layer
+      *ngIf="basemap() === 'osm'"
+      [props]="osmLayerProps"
+    >
+    </y-map-layer>
 
-      <y-map-layer [props]="osmLayerProps">
-      </y-map-layer>
 
-    </ng-container>
     <y-map-default-features-layer [props]="{ zIndex: 2021 }" />
     <y-map-mouse></y-map-mouse>
 
