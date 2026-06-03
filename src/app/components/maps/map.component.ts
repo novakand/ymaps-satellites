@@ -89,7 +89,7 @@ export class MapComponent {
     private readonly DEFAULT_POLYGON_STYLE = {
         strokeColor: '#2563EB',
         strokeWidth: 2,
-        strokeOpacity: 0.7,
+        strokeOpacity: 0.4,
         fillOpacity: 0.08
     };
 
