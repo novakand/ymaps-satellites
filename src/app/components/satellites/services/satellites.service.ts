@@ -23,12 +23,12 @@ export class SatellitesService {
             .get<SatelliteIndexItem[]>(
                 this.INDEX_URL
             )
-    // .pipe(
-    //     shareReplay({
-    //         bufferSize: 1,
-    //         refCount: true
-    //     })
-    // );
+            .pipe(
+                shareReplay({
+                    bufferSize: 1,
+                    refCount: true
+                })
+            );
 
     findAll(): Observable<SatelliteIndexItem[]> {
         return this.satellites$;
@@ -36,14 +36,14 @@ export class SatellitesService {
 
 
     getBeamCoverage(
-    layer: SatelliteIndexItem
-): Observable<GeoJSON.FeatureCollection> {
+        layer: SatelliteIndexItem
+    ): Observable<GeoJSON.FeatureCollection> {
 
-    return this.http.get<GeoJSON.FeatureCollection>(
-        `${this.BASE}/${layer.file}`
-    );
+        return this.http.get<GeoJSON.FeatureCollection>(
+            `${this.BASE}/${layer.file}`
+        );
 
-}
+    }
 
     getCoverage(
         file: string
