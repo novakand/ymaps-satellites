@@ -64,10 +64,7 @@
 
 
     <y-map-default-scheme-layer *ngIf="basemap() === 'scheme'"></y-map-default-scheme-layer>
-
-    <!-- ГИБРИД (СПУТНИК + СХЕМА) -->
     <ng-container *ngIf="basemap() === 'hybrid'">
-      <!-- спутник всегда ниже схемы -->
       <y-map-satellite [props]="{ zIndex: 0 }"></y-map-satellite>
       <y-map-default-scheme-layer [props]="schemeProps"></y-map-default-scheme-layer>
     </ng-container>
@@ -241,37 +238,28 @@
 
     </ng-container>
 
+    <y-map-feature-data-source [props]="{ id: 'beam' }" />
 
-    <y-map-feature-data-source
-  [props]="{ id: 'beam' }"
-/>
-
-<y-map-layer
-  [props]="{
+    <y-map-layer [props]="{
     source: 'beam',
     type: 'features',
     zIndex: 2020
-  }"
-/>
+  }" />
 
-<ng-container
-  *ngFor="
+    <ng-container *ngFor="
     let beam of beamFeatures;
     trackBy: trackById
-  "
->
+  ">
 
-  <y-map-feature
-    [props]="{
+      <y-map-feature [props]="{
       source: 'beam',
       id: beam.id,
       geometry: beam.geometry,
       properties: beam.properties,
       style: beam.style
-    }"
-  />
+    }" />
 
-</ng-container>
+    </ng-container>
 
 
     <ng-container>
