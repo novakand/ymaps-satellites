@@ -83,10 +83,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ymaps-satellites :build:production"
+              "buildTarget": "ymaps-satellites:build:production"
             },
             "development": {
-              "buildTarget": "ymaps-satellites :build:development"
+              "buildTarget": "ymaps-satellites:build:development"
             }
           },
           "defaultConfiguration": "development"
