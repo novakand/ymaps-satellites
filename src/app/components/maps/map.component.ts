@@ -67,7 +67,6 @@ import { YMapTileDataSourceDirective } from './directives/y-map-tile-data-source
 })
 
 export class MapComponent {
-
     public center = signal<[number, number]>([37.617698, 55.755864]);
     public zoom = signal<number>(3);
     public theme = signal<'light' | 'dark'>('light');
@@ -118,7 +117,7 @@ export class MapComponent {
         title: string;
     };
 
-    setBasemap(v: any) { this.basemap.set(v); }
+    public setBasemap(v: any) { this.basemap.set(v); }
 
     public schemeProps: any = {
         source: 'scheme',
