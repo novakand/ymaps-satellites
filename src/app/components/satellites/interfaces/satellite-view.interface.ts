@@ -40,4 +40,6 @@ export interface SatelliteViewModel {
 
     activeBeams?: SatelliteBeamInfo[];
 
+    multiColorCoverage?: boolean;
+
 }

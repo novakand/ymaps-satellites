@@ -2,7 +2,13 @@ import { Injectable } from "@angular/core";
 import { Feature } from "geojson";
 import { BehaviorSubject } from "rxjs";
 import { SatelliteViewModel } from "../../satellites/interfaces/satellite-view.interface";
+export interface CoverageData {
 
+    features: Feature[];
+
+    multiColor?: boolean;
+
+}
 @Injectable({ providedIn: 'root' })
 export class MapService {
 
@@ -74,22 +80,32 @@ export class MapService {
 
 
     private readonly _coverageFeatures$ =
-        new BehaviorSubject<Feature[]>([]);
+    new BehaviorSubject<CoverageData>({
+        features: [],
+        multiColor: false
+    });
 
-    public readonly coverageFeatures$ =
-        this._coverageFeatures$.asObservable();
+public readonly coverageFeatures$ =
+    this._coverageFeatures$.asObservable();
 
-    public setCoverageFeatures(
-        features: Feature[]
-    ): void {
+public setCoverageFeatures(
+    features: Feature[],
+    multiColor = false
+): void {
 
-        this._coverageFeatures$.next(features);
+    this._coverageFeatures$.next({
+        features,
+        multiColor
+    });
 
-    }
+}
 
-    public clearCoverageFeatures(): void {
+public clearCoverageFeatures(): void {
 
-        this._coverageFeatures$.next([]);
+    this._coverageFeatures$.next({
+        features: [],
+        multiColor: false
+    });
 
-    }
+}
 }

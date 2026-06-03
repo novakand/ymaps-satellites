@@ -77,7 +77,9 @@ export class SatellitesListComponent implements OnInit {
     public selectedBeamKey: string | null = null;
     public filteredSatellites: SatelliteViewModel[] = [];
     public selectedSatelliteKey: string | null = null;
-
+    private readonly MULTI_COLOR_SATELLITES = [
+        'yamal-601'
+    ];
     public visibleSatellites = new Set<string>();
 
     public onSelectSatellite(
@@ -413,7 +415,8 @@ export class SatellitesListComponent implements OnInit {
 
                 this._mapService
                     .setCoverageFeatures(
-                        features
+                        features,
+                        satellite.multiColorCoverage
                     );
 
                 this._cdr.markForCheck();
@@ -484,7 +487,11 @@ export class SatellitesListComponent implements OnInit {
                         return [{
                             key,
                             meta,
-                            layers
+                            layers,
+                            multiColorCoverage:
+                                this.MULTI_COLOR_SATELLITES.includes(
+                                    key
+                                )
                         }];
 
                     })

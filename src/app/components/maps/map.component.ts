@@ -93,6 +93,15 @@ export class MapComponent {
         fillOpacity: 0.08
     };
 
+    private readonly COVERAGE_COLORS = [
+        '#2563EB',
+        '#10B981',
+        '#F59E0B',
+        '#EF4444',
+        '#8B5CF6',
+        '#06B6D4'
+    ];
+
     public osmSourceProps = {
         id: 'osm-source',
         raster: {
@@ -155,6 +164,26 @@ export class MapComponent {
             ]
         }
     };
+
+
+    private getCoverageColor(
+        index: number
+    ): string {
+
+        const colors = [
+            '#2563EB',
+            '#10B981',
+            '#F59E0B',
+            '#EF4444',
+            '#8B5CF6',
+            '#06B6D4'
+        ];
+
+        return colors[
+            index % colors.length
+        ];
+
+    }
 
     private _eventManager: MapEventManager = new MapEventManager(inject(NgZone));
     private _bounds = this._eventManager.getLazyEmitter<{
@@ -488,38 +517,40 @@ export class MapComponent {
             .pipe(
                 takeUntil(this._destroy$)
             )
-            .subscribe(features => {
+            .subscribe(data => {
 
-                this.coverageFeatures = features.map((f, index) => {
+                this.coverageFeatures =
+                    data.features.map((f, index) => {
 
-                    const color =
-                        f.properties?.['stroke'] ||
-                        f.properties?.['fill'] ||
-                        '#007aff';
+                        const color =
+                            data.multiColor
+                                ? this.getCoverageColor(index)
+                                : this.DEFAULT_POLYGON_STYLE.strokeColor;
 
-                    return {
-                        id: `coverage-${index}`,
+                        return {
+                            id: `coverage-${index}`,
 
-                        geometry: this.normalizeGeometry(
-                            structuredClone(f.geometry)
-                        ),
+                            geometry: this.normalizeGeometry(
+                                structuredClone(f.geometry)
+                            ),
 
-                        properties: f.properties,
+                            properties: f.properties,
 
-                        style: {
-                            stroke: [{
-                                color: this.DEFAULT_POLYGON_STYLE.strokeColor,
-                                width: this.DEFAULT_POLYGON_STYLE.strokeWidth,
-                                opacity: this.DEFAULT_POLYGON_STYLE.strokeOpacity
-                            }],
-                            fill: this.withAlpha(
-                                this.DEFAULT_POLYGON_STYLE.strokeColor,
-                                this.DEFAULT_POLYGON_STYLE.fillOpacity
-                            )
-                        }
-                    };
+                            style: {
+                                stroke: [{
+                                    color,
+                                    width: this.DEFAULT_POLYGON_STYLE.strokeWidth,
+                                    opacity: this.DEFAULT_POLYGON_STYLE.strokeOpacity
+                                }],
+                                fill: this.withAlpha(
+                                    color,
+                                    this.DEFAULT_POLYGON_STYLE.fillOpacity
+                                )
+                            }
+                        };
 
-                });
+                    });
+
                 this.cdr.markForCheck();
 
             });
