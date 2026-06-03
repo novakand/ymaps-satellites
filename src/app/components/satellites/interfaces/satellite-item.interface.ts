@@ -8,7 +8,7 @@ export interface SatelliteIndexItem {
     count: number;
 
     sat: string;
-
+    band:string;
     beam: string | null;
 
     bbox: [number, number, number, number];

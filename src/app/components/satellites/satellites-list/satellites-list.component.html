@@ -235,7 +235,7 @@
                   <b>{{ beam.beam }}</b>
                 </div>
 
-                <p-button
+                <!-- <p-button
                   [icon]="
       selectedBeamKey === getBeamKey(sat, beam)
         ? 'pi pi-eye-slash'
@@ -245,7 +245,7 @@
                   [rounded]="true"
                   size="small"
                   (click)="showBeam(sat, beam, $event)"
-                />
+                /> -->
 
               </div>
 
@@ -266,7 +266,10 @@
 
               </div>
 
-              <div *ngIf="beam.levelLabel">
+              <div *ngIf="
+        sat.key === 'amu-1' &&
+        beam.levelLabel
+    ">
                 Уровень сигнала:
                 <b>{{ beam.levelLabel }}</b>
               </div>

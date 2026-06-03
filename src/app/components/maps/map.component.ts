@@ -93,15 +93,6 @@ export class MapComponent {
         fillOpacity: 0.08
     };
 
-    private readonly COVERAGE_COLORS = [
-        '#2563EB',
-        '#10B981',
-        '#F59E0B',
-        '#EF4444',
-        '#8B5CF6',
-        '#06B6D4'
-    ];
-
     public osmSourceProps = {
         id: 'osm-source',
         raster: {
@@ -119,6 +110,26 @@ export class MapComponent {
         },
         clampMapZoom: true
     };
+
+
+    private getBandColor(
+        band?: 'Ka' | 'Ku'
+    ): string {
+
+        switch (band) {
+
+            case 'Ka':
+                return '#0195B6';
+
+            case 'Ku':
+                return '#22C55E';
+
+            default:
+                return '#2563EB';
+
+        }
+
+    }
 
     public osmLayerProps = {
         source: 'osm-source',
@@ -521,11 +532,14 @@ export class MapComponent {
 
                 this.coverageFeatures =
                     data.features.map((f, index) => {
+                        console.log(f, index, 'jjjj')
 
                         const color =
                             data.multiColor
                                 ? this.getCoverageColor(index)
-                                : this.DEFAULT_POLYGON_STYLE.strokeColor;
+                                : this.getBandColor(
+                                    data.band
+                                );
 
                         return {
                             id: `coverage-${index}`,

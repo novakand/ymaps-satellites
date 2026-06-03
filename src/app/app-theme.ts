@@ -69,7 +69,7 @@ export const Noir = definePreset(Aura, {
                     950: '#020617'
                 },
                 primary: {
-                    color: '#1863CC',
+                    color: '#0195B6',
                     contrastColor: '#ffffff',
                     hoverColor: '#124C9E',
                     activeColor: '#5d6179'

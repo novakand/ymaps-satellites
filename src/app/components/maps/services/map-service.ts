@@ -3,9 +3,8 @@ import { Feature } from "geojson";
 import { BehaviorSubject } from "rxjs";
 import { SatelliteViewModel } from "../../satellites/interfaces/satellite-view.interface";
 export interface CoverageData {
-
     features: Feature[];
-
+    band?: 'Ka' | 'Ku';
     multiColor?: boolean;
 
 }
@@ -80,32 +79,34 @@ export class MapService {
 
 
     private readonly _coverageFeatures$ =
-    new BehaviorSubject<CoverageData>({
-        features: [],
-        multiColor: false
-    });
+        new BehaviorSubject<CoverageData>({
+            features: [],
+            multiColor: false
+        });
 
-public readonly coverageFeatures$ =
-    this._coverageFeatures$.asObservable();
+    public readonly coverageFeatures$ =
+        this._coverageFeatures$.asObservable();
 
-public setCoverageFeatures(
-    features: Feature[],
-    multiColor = false
-): void {
+    public setCoverageFeatures(
+        features: Feature[],
+        multiColor = false,
+        band?: 'Ka' | 'Ku'
+    ): void {
 
-    this._coverageFeatures$.next({
-        features,
-        multiColor
-    });
+        this._coverageFeatures$.next({
+            features,
+            multiColor,
+            band
+        });
 
-}
+    }
 
-public clearCoverageFeatures(): void {
+    public clearCoverageFeatures(): void {
 
-    this._coverageFeatures$.next({
-        features: [],
-        multiColor: false
-    });
+        this._coverageFeatures$.next({
+            features: [],
+            multiColor: false
+        });
 
-}
+    }
 }
