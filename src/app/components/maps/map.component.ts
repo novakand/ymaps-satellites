@@ -88,7 +88,7 @@ export class MapComponent {
     public satelliteGraphics: any[] = [];
     private readonly DEFAULT_POLYGON_STYLE = {
         strokeColor: '#2563EB',
-        strokeWidth: 2,
+        strokeWidth: 3,
         strokeOpacity: 0.4,
         fillOpacity: 0.08
     };
