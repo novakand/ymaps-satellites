@@ -189,6 +189,9 @@
           <div>
             Азимут (магн.):
             <b>{{ sat.azimuthMagnetic ?? '—' }}°</b>
+            <span *ngIf="sat.magneticDeclination != null">
+              (склонение {{ sat.magneticDeclination }}°)
+            </span>
           </div>
 
           <div>

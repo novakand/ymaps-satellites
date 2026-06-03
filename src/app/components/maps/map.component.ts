@@ -371,25 +371,52 @@ export class MapComponent {
             )
             .subscribe(features => {
 
-                this.beamFeatures = features.map(
-                    (f, index) => ({
+                const normalized =
+                    Array.isArray(features[0])
+                        ? features.flat()
+                        : features;
+
+
+                this.beamFeatures = normalized.map((f, index) => {
+
+                    const stroke =
+                        f.properties?.['stroke']
+                        ?? '#00BFFF';
+
+                    const strokeOpacity =
+                        f.properties?.['stroke-opacity']
+                        ?? 1;
+
+                    const fill =
+                        f.properties?.['fill']
+                        ?? '#00BFFF';
+
+                    const fillOpacity =
+                        f.properties?.['fill-opacity']
+                        ?? 0.2;
+
+                    return {
                         id: `beam-${index}`,
+
                         geometry: this.normalizeGeometry(
-                            structuredClone(
-                                f.geometry
-                            )
+                            structuredClone(f.geometry)
                         ),
+
                         properties: f.properties,
+
                         style: {
                             stroke: [{
-                                color: '#00BFFF',
-                                width: 4,
+                                color: '#00ffff',
+                                width: 2,
                                 opacity: 1
                             }],
-                            fill: '#00BFFF33'
+                            fill: this.withAlpha(
+                                '#0000ff',
+                                0.15
+                            )
                         }
-                    })
-                );
+                    };
+                });
                 this.cdr.markForCheck();
 
             });

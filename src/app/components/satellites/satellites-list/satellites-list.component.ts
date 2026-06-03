@@ -173,7 +173,7 @@ export class SatellitesListComponent implements OnInit {
         this.selectedBeamKey = beamKey;
 
         this._mapService.setBeamFeatures([
-            beam.feature
+            beam.allFeatures ?? [beam.feature]
         ]);
 
     }
@@ -241,7 +241,8 @@ export class SatellitesListComponent implements OnInit {
 
                                 return {
                                     layer,
-                                    feature: bestFeature
+                                    feature: bestFeature,
+                                    allFeatures: fc.features
                                 };
 
                             })
@@ -309,7 +310,8 @@ export class SatellitesListComponent implements OnInit {
                                     info?.pol ?? '—',
 
                                 feature:
-                                    x.feature
+                                    x.feature,
+                                allFeatures: x.allFeatures
 
 
                             };
@@ -561,6 +563,12 @@ export class SatellitesListComponent implements OnInit {
 
                 satellite!.azimuthTrue =
                     look.azimuthTrue;
+
+                satellite!.azimuthMagnetic =
+                    look.azimuthMagnetic;
+
+                satellite!.magneticDeclination =
+                    look.magneticDeclination;
 
                 satellite!.elevation =
                     look.elevation;

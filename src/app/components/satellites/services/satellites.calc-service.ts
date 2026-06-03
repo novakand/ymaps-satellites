@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import geomagnetism from 'geomagnetism';
 
 @Injectable({
     providedIn: 'root'
@@ -120,11 +121,41 @@ export class SatelliteCalculationService {
                 )
             );
 
+
+        const magneticPoint =
+            geomagnetism
+                .model()
+                .point([
+                    siteLat,
+                    siteLon
+                ]);
+
+        const declination =
+            magneticPoint.decl;
+
+        const azimuthMagnetic =
+            (
+                azimuthTrue -
+                declination +
+                360
+            ) % 360;
+
+
         return {
 
             azimuthTrue:
                 Number(
                     azimuthTrue.toFixed(1)
+                ),
+
+            azimuthMagnetic:
+                Number(
+                    azimuthMagnetic.toFixed(1)
+                ),
+
+            magneticDeclination:
+                Number(
+                    declination.toFixed(1)
                 ),
 
             elevation:

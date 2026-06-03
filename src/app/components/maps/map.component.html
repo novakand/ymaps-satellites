@@ -51,7 +51,6 @@
     <y-map-tile-data-source [props]="osmSourceProps">
     </y-map-tile-data-source>
 
-    <!-- появляется только при OSM -->
     <y-map-layer
       *ngIf="basemap() === 'osm'"
       [props]="osmLayerProps"
