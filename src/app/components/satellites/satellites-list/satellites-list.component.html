@@ -1,0 +1,334 @@
+<div class="h-full overflow-y-auto">
+
+  <div class="flex items-center justify-between w-full mb-0 gap-2 p-6">
+    <div class="text-900 text-xl font-semibold whitespace-nowrap"> Карта покрытия: спутниковый интернет</div>
+    <div class="flex items-center ml-auto">
+
+
+      <p-button
+        *ngIf="isSmallScreen"
+        class="text-xl"
+        [rounded]="true"
+        badgeSeverity="contrast"
+        (click)="toggleSideBar()"
+        size="large"
+        icon="pi pi-map"
+        [text]="true"
+      />
+
+      <p-selectbutton
+        [options]="colorOptions"
+        allowEmpty="false"
+        [(ngModel)]="selectedColors"
+        optionValue="value"
+        [multiple]="true"
+      >
+        <ng-template
+          #item
+          let-option
+        >
+          <span
+            class="w-4 h-4 rounded-full block"
+            [style.backgroundColor]="option.color"
+          ></span>
+        </ng-template>
+      </p-selectbutton>
+    </div>
+  </div>
+
+  <div class="p-4 flex flex-col gap-3">
+    <ng-container *ngIf="inProgress">
+      <p-skeleton height="3rem" />
+      <p-skeleton height="3rem" />
+      <p-skeleton height="3rem" />
+      <p-skeleton height="3rem" />
+      <p-skeleton
+        *ngFor="let item of skeletons"
+        height="4rem"
+      />
+
+    </ng-container>
+
+
+    <ng-container *ngIf="!inProgress">
+
+      <map-search-control></map-search-control>
+
+      <map-geocoding-control></map-geocoding-control>
+
+      <map-geo-location-control></map-geo-location-control>
+
+
+      <div class="border-b pb-2 border-surface surface-100 text-sm line-height-3">
+        <ul class="m-0">
+          <li>
+            • Маркер на карте можно перетаскивать.
+          </li>
+
+          <li>
+            • Список спутников автоматически обновляется
+            при перемещении точки установки.
+          </li>
+
+          <li>
+            • Выберите спутник ниже, чтобы увидеть
+            его лучи и параметры приёма.
+          </li>
+
+          <li>
+            • После выбора спутника на карте
+            отображается линия направления на спутник.
+            Её можно использовать как ориентир
+            относительно зданий и других объектов
+            на детальной карте.
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex flex-wrap justify-between gap-6">
+        <label class="font-semibold">Только доступные спутники</label>
+        <p-toggleswitch
+          [(ngModel)]="showOnlyAvailable"
+          (ngModelChange)="onShowOnlyAvailableChange()"
+        />
+      </div>
+
+
+      <p-panel
+        *ngFor="let sat of filteredSatellites;
+      trackBy: trackBySatellite"
+        [toggleable]="true"
+        [styleClass]="
+     selectedSatelliteKey === sat.key
+    ? 'sat-panel sat-panel--active'
+    : 'sat-panel'
+    "
+        [collapsed]="true"
+        expandIcon="pi pi-angle-up"
+        collapseIcon="pi pi-angle-down"
+        (collapsedChange)="onCollapsedChange($event, sat)"
+      >
+
+        <ng-template pTemplate="header">
+
+          <div
+            class="flex items-center justify-between w-full"
+            (click)="selectSatellite(sat); $event.stopPropagation()"
+          >
+
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+
+              <p-radiobutton
+                name="satellite"
+                [value]="sat.key"
+                [(ngModel)]="selectedSatelliteKey"
+              />
+
+              <span class="font-medium truncate flex-1">
+
+                {{ sat.meta.orbDeg }}°
+                {{ sat.meta.title }}
+
+              </span>
+
+            </div>
+
+            <div class="w-32 flex justify-center shrink-0">
+
+              <p-badge
+                *ngIf="sat.available"
+                value="Доступен"
+                severity="success"
+              />
+
+              <p-badge
+                *ngIf="sat.available === false"
+                value="Не доступен"
+                severity="danger"
+              />
+
+            </div>
+
+            <div class="w-10 flex justify-center shrink-0">
+
+              <p-button
+                [text]="true"
+                [rounded]="true"
+                size="small"
+                [icon]="
+      visibleSatellites.has(sat.key)
+        ? 'pi pi-eye-slash'
+        : 'pi pi-eye'
+    "
+                (click)="toggleCoverage(sat, $event)"
+              />
+
+            </div>
+
+
+
+          </div>
+
+        </ng-template>
+
+        <div class="flex flex-col gap-2">
+
+          <div>
+            Азимут (ист.):
+            <b>{{ sat.azimuthTrue ?? '—' }}°</b>
+          </div>
+
+          <div>
+            Азимут (магн.):
+            <b>{{ sat.azimuthMagnetic ?? '—' }}°</b>
+          </div>
+
+          <div>
+            Угол места:
+            <b>{{ sat.elevation ?? '—' }}°</b>
+          </div>
+
+          <div>
+            Точка стояния (орб. позиция):
+            <b>{{ sat.meta.orbDeg }}°</b>
+          </div>
+
+          <div *ngIf="sat.meta.showSkew">
+            Угол поворота конвертора:
+            <b>{{ sat.skew ?? '—' }}°</b>
+          </div>
+
+          <div
+            *ngIf="sat.activeBeams?.length"
+            class="mt-3"
+          >
+
+            <div>
+              Лучи в этой точке:
+              <b>
+
+                {{ getBeamNumbers(sat) }}
+
+              </b>
+            </div>
+
+            <div
+              *ngFor="
+      let beam of sat.activeBeams
+    "
+              class="mt-3 p-3 border border-surface-100 bg-surface-50 rounded-2xl flex flex-col gap-2"
+            >
+
+              <div class="flex items-center justify-between">
+
+                <div>
+                  Номер луча:
+                  <b>{{ beam.beam }}</b>
+                </div>
+
+                <p-button
+                  [icon]="
+      selectedBeamKey === getBeamKey(sat, beam)
+        ? 'pi pi-eye-slash'
+        : 'pi pi-eye'
+    "
+                  [text]="true"
+                  [rounded]="true"
+                  size="small"
+                  (click)="showBeam(sat, beam, $event)"
+                />
+
+              </div>
+
+              <div>
+
+                Зона действия:
+                <p-badge
+                  *ngIf="beam.zone === 'Зона уверенного приёма'"
+                  value="Уверенный приём"
+                  severity="success"
+                />
+
+                <p-badge
+                  *ngIf="beam.zone === 'Зона неуверенного приёма'"
+                  value="Неуверенный приём"
+                  severity="warn"
+                />
+
+              </div>
+
+              <div *ngIf="beam.levelLabel">
+                Уровень сигнала:
+                <b>{{ beam.levelLabel }}</b>
+              </div>
+
+              <div>
+
+                Код РЧ-кластера:
+                <b>{{ beam.code }}</b>
+
+              </div>
+
+              <div>
+
+                Код местоположения:
+                <b>{{ beam.locationCode }}</b>
+
+              </div>
+
+              <div>
+
+                Поляризация:
+                <b>{{ beam.polarization }}</b>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </p-panel>
+
+      <div
+        *ngIf="
+    !filteredSatellites.length
+  "
+        class="
+    p-4
+    text-center
+    text-color-secondary
+  "
+      >
+
+        Нет доступных спутников
+
+      </div>
+
+    </ng-container>
+
+    <div class="
+    mt-4
+    border-round
+    surface-100
+    text-sm
+    text-color-secondary
+    line-height-3
+  ">
+
+      <p class="m-0">
+        Размещённая информация на карте является приблизительной.
+        Карта покрытия спутниковой связи работает в тестовом режиме
+        и может иметь отклонения от фактических параметров.
+      </p>
+
+      <p class="mt-2 mb-0">
+        Вся предоставленная информация, за исключением обязательной
+        к раскрытию в соответствии с законодательством Российской Федерации,
+        носит исключительно справочный характер и может быть неактуальной.
+      </p>
+
+    </div>
+
+  </div>

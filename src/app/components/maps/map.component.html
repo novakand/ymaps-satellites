@@ -1,0 +1,330 @@
+<div class="c-map">
+
+
+  <!-- <map-sidebar
+    [isVisible]="isVisible"
+    (visibleChange)="onVisibleChangeSidebar($event)"
+  ></map-sidebar> -->
+
+
+  <div class="c-map-toolbar-horizontal">
+
+
+    <!-- <map-search-control
+      (locationSelected)="onLocationSelected($event)"
+      (locationCleared)="onLocationCleared()"
+    >
+    </map-search-control> -->
+    <!-- <map-legend-control></map-legend-control> -->
+    <div class="flex-fill"></div>
+
+    <map-legend-control></map-legend-control>
+
+  </div>
+
+  <div class="c-map-toolbar-vertical">
+    <!-- <map-settings-control
+      (onChange)="onChangeSettings($event)"
+      [isShowSettingsControl]="true"
+    >
+    </map-settings-control> -->
+    <div class="flex-fill"></div>
+    <map-fullscreen-control
+      *ngIf="isLargeScreen"
+      [fullscreenClass]="fullscreenClass"
+    ></map-fullscreen-control>
+    <div class="c-map__y-offset"></div>
+    <map-zoom-control *ngIf="isLargeScreen"></map-zoom-control>
+
+    <div class="flex-fill"></div>
+
+  </div>
+  <div class="c-map-toolbar-horizontal c-map-toolbar-horizontal__bottom">
+    <div class="flex-fill"></div>
+
+  </div>
+  <ng-container *ngIf="!isMapLoad">
+    <p-skeleton
+      width="100%"
+      height="100%"
+    />
+  </ng-container>
+  <y-map
+    [props]="{
+    location: {
+      center: [37.617698, 55.755864],
+      zoom: 4
+    },
+    theme: theme(),
+    zoomRange: zoomRange(),
+    margin: [0,0,0,0]
+  }"
+    (ready)="onMapReady($event)"
+  >
+
+
+    <y-map-default-scheme-layer *ngIf="basemap() === 'scheme'"></y-map-default-scheme-layer>
+
+    <!-- ГИБРИД (СПУТНИК + СХЕМА) -->
+    <ng-container *ngIf="basemap() === 'hybrid'">
+      <!-- спутник всегда ниже схемы -->
+      <y-map-satellite [props]="{ zIndex: 0 }"></y-map-satellite>
+      <y-map-default-scheme-layer [props]="schemeProps"></y-map-default-scheme-layer>
+    </ng-container>
+
+
+    <ng-container *ngIf="basemap() === 'osm'">
+
+      <y-map-tile-data-source [props]="osmSourceProps">
+      </y-map-tile-data-source>
+
+      <y-map-layer [props]="osmLayerProps">
+      </y-map-layer>
+
+    </ng-container>
+    <y-map-default-features-layer [props]="{ zIndex: 2021 }" />
+    <y-map-mouse></y-map-mouse>
+
+    <ng-container *ngIf="searchMarker as m">
+      <y-map-marker [props]="{
+      coordinates: m.coordinates,
+       draggable: true,
+       mapFollowsOnDrag: true,
+        onDragMove: onSearchMarkerDragMove,
+        onDragEnd: onSearchMarkerDragEnd,
+      zIndex: 6000,
+    }">
+
+        <div
+          class="ym-marker"
+          style="position: relative; z-index: 6000;"
+        >
+
+
+          <div
+            class="ym-marker__circle"
+            [style.--marker-color]="m.color || '#E63D2E'"
+          >
+            <svg viewBox="0 0 24 24">
+
+              <circle
+                cx="12"
+                cy="12"
+                r="12"
+                fill="var(--marker-color)"
+              />
+
+              <circle
+                cx="12"
+                cy="12"
+                r="9"
+                fill="none"
+                stroke="#ffffff"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
+
+
+          <div class="ym-marker__icon">
+            <svg viewBox="0 0 24 24">
+
+            </svg>
+          </div>
+
+
+          <div class="ym-marker__label">
+
+            <ng-container *ngIf="!isDraggingAddress">
+              {{ m.title }}
+            </ng-container>
+
+            <ng-container *ngIf="isDraggingAddress">
+
+              Определение адреса
+
+              <span class="loading-dots">
+                <span>.</span>
+                <span>.</span>
+                <span>.</span>
+              </span>
+
+            </ng-container>
+
+          </div>
+
+        </div>
+
+      </y-map-marker>
+    </ng-container>
+
+    <ng-container *ngIf="satelliteMarker as sat">
+
+      <y-map-marker [props]="{
+  coordinates: sat.coordinates,
+  zIndex: 6000
+}">
+
+        <div
+          class="ym-marker"
+          style="position: relative; z-index: 6000;"
+        >
+
+          <div class="satellite-marker__icon">
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 64 64"
+              width="32"
+              height="32"
+            >
+              <path
+                d="M28 36l-6 6 0 8 8 0 6-6"
+                fill="#cfd8dc"
+              />
+              <circle
+                cx="34"
+                cy="30"
+                r="10"
+                fill="#90caf9"
+              />
+              <circle
+                cx="34"
+                cy="30"
+                r="6"
+                fill="#42a5f5"
+              />
+              <path
+                d="M44 22l16-8-4 20-14 6"
+                fill="#b0bec5"
+              />
+              <path
+                d="M24 38l-14 6-4-20 16 8"
+                fill="#b0bec5"
+              />
+              <rect
+                x="30"
+                y="40"
+                width="8"
+                height="16"
+                rx="2"
+                fill="#546e7a"
+              />
+            </svg>
+
+          </div>
+
+          <div class="ym-marker__label">
+            {{ sat.title }}
+            ({{ sat.orbDeg }}°)
+          </div>
+
+        </div>
+
+      </y-map-marker>
+
+    </ng-container>
+
+
+    <ng-container>
+      <y-map-feature-data-source [props]="{ id: 'satellite-graphics' }" />
+
+      <y-map-layer [props]="{source: 'satellite-graphics',type: 'features',zIndex: 2010}" />
+    </ng-container>
+
+
+    <ng-container *ngFor="let f of satelliteGraphics; trackBy: trackById">
+
+      <y-map-feature
+        [props]="{source: 'satellite-graphics',id: f.id, geometry: f.geometry,properties: f.properties, style: f.style}"
+      />
+
+    </ng-container>
+
+
+    <y-map-feature-data-source
+  [props]="{ id: 'beam' }"
+/>
+
+<y-map-layer
+  [props]="{
+    source: 'beam',
+    type: 'features',
+    zIndex: 2020
+  }"
+/>
+
+<ng-container
+  *ngFor="
+    let beam of beamFeatures;
+    trackBy: trackById
+  "
+>
+
+  <y-map-feature
+    [props]="{
+      source: 'beam',
+      id: beam.id,
+      geometry: beam.geometry,
+      properties: beam.properties,
+      style: beam.style
+    }"
+  />
+
+</ng-container>
+
+
+    <ng-container>
+
+      <y-map-feature-data-source [props]="{ id: 'coverage' }" />
+
+      <y-map-layer [props]="{
+      source: 'coverage',
+      type: 'features',
+      zIndex: 2010
+    }" />
+
+    </ng-container>
+
+
+    <ng-container *ngFor="let f of coverageFeatures; trackBy: trackById">
+      <y-map-feature [props]="{
+      source: 'coverage',
+      hideOutsideViewport: true,
+      id: f.id,  
+      geometry: f.geometry,
+      properties: f.properties,
+      style: f.style
+    }" />
+
+    </ng-container>
+
+
+
+
+    <y-map-hint [props]="{ hint: onHint }">
+      <ng-template let-context>
+        <div class="ym-hint">
+          <div class="ym-hint__header">
+            <span
+              class="ym-hint__dot"
+              [style.background]="context?.hint?.color"
+            ></span>
+            {{ context?.hint?.title }}
+          </div>
+
+          <div
+            class="ym-hint__coords"
+            *ngIf="context?.hint?.coords"
+          >
+            {{ context?.hint?.coords[1] }},
+            {{ context?.hint?.coords[0] }}
+          </div>
+        </div>
+      </ng-template>
+    </y-map-hint>
+
+
+  </y-map>
+
+</div>
