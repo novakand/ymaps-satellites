@@ -777,7 +777,6 @@ export class MapComponent {
         return geometry;
     }
 
-
     private buildBoundsFromGeoJSON(
         input:
             | GeoJSON.Feature
