@@ -109,7 +109,7 @@
 
 .layout-content {
   overflow: auto;
-  height: 100vh;
+  height: 100dvh;
 }
 
 
@@ -123,7 +123,7 @@
   position: relative !important;
 
   width: 100% !important;
-  max-height: 52vh;
+  max-height: 52dvh;
 
   opacity: 1 !important;
   visibility: visible !important;
@@ -150,14 +150,14 @@
   width: 100% !important;
 
   height: 100% !important;
-  min-height: 48vh;
+  min-height: 48dvh;
 }
 
 .layout-map-stack .layout-map-content-wrapper {
   width: 100% !important;
   margin-left: 0 !important;
 
-  height: 48vh !important;
+  height: 48dvh !important;
 
   flex-shrink: 0;
 }
@@ -168,7 +168,7 @@
   height: 100% !important;
 }
 
-.layout-map-stack .c-map {
+div.layout-map-stack div.c-map {
   position: relative !important;
   width: 100%;
   height: 48dvh !important;
