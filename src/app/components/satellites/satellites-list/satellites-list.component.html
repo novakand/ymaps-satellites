@@ -232,7 +232,14 @@
 
               <div class="flex items-center justify-between">
 
-                <div>
+                <div
+                  class="text-xl font-bold "
+                  [style.color]="
+    selectedBeamKey === getBeamKey(sat, beam)
+      ? 'var(--primary-color)'
+      : ''
+  "
+                >
                   Номер луча:
                   <b>{{ beam.beam }}</b>
                 </div>
