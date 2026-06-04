@@ -2,6 +2,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, NgZone, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChipModule } from 'primeng/chip';
+import { point, booleanPointInPolygon } from '@turf/turf';
 import {
     YMapComponent,
     YMapDefaultSchemeLayerDirective,
@@ -84,6 +85,7 @@ export class MapComponent {
     public isSmallScreen: boolean;
     public isLargeScreen: boolean;
     public searchMarker?: any;
+    public activeBeamId: string | null = null;
     public fullscreenClass = 'layout-map-container';
     public satelliteGraphics: any[] = [];
     private readonly DEFAULT_POLYGON_STYLE = {
@@ -172,7 +174,6 @@ export class MapComponent {
             ]
         }
     };
-
 
     private getCoverageColor(
         index: number
@@ -326,6 +327,104 @@ export class MapComponent {
     }
 
 
+    private updateActiveBeam(
+        coordinates: [number, number]
+    ): void {
+
+        const pt = point(coordinates);
+
+        let activeBeam: any = null;
+        let bestLevel = -Infinity;
+
+        for (const beam of this.beamFeatures) {
+
+            const isInside =
+                booleanPointInPolygon(
+                    pt,
+                    {
+                        type: 'Feature',
+                        geometry: beam.geometry,
+                        properties: {}
+                    } as any
+                );
+
+            if (!isInside) {
+                continue;
+            }
+
+            const level =
+                Number(
+                    String(
+                        beam.properties?.name ?? ''
+                    ).match(/([\d.]+)/)?.[1]
+                );
+
+            if (
+                Number.isFinite(level) &&
+                level > bestLevel
+            ) {
+
+                bestLevel = level;
+                activeBeam = beam;
+
+            }
+
+        }
+
+        this.activeBeamId =
+            activeBeam?.id ?? null;
+
+        this.rebuildBeamStyles();
+
+    }
+
+    private rebuildBeamStyles(): void {
+
+        this.beamFeatures =
+            this.beamFeatures.map(beam => {
+
+                const isActive =
+                    beam.id === this.activeBeamId;
+
+                return {
+
+                    ...beam,
+
+                    style: {
+
+                        stroke: [{
+
+                            color: '#00ffff',
+
+                            width:
+                                isActive
+                                    ? 4
+                                    : 2,
+
+                            opacity:
+                                isActive
+                                    ? 1
+                                    : 0.8
+
+                        }],
+
+                        fill: this.withAlpha(
+                            '#0000ff',
+                            isActive
+                                ? 0.40
+                                : 0.15
+                        )
+
+                    }
+
+                };
+
+            });
+
+        this.cdr.markForCheck();
+
+    }
+
     ngOnDestroy(): void {
         this._destroy$.next(true);
         this._destroy$.complete();
@@ -364,7 +463,6 @@ export class MapComponent {
 
 
     private _watchBeamCoverage(): void {
-
         this.mapService.beamFeatures$
             .pipe(
                 takeUntil(this._destroy$)
@@ -378,23 +476,6 @@ export class MapComponent {
 
 
                 this.beamFeatures = normalized.map((f, index) => {
-
-                    const stroke =
-                        f.properties?.['stroke']
-                        ?? '#00BFFF';
-
-                    const strokeOpacity =
-                        f.properties?.['stroke-opacity']
-                        ?? 1;
-
-                    const fill =
-                        f.properties?.['fill']
-                        ?? '#00BFFF';
-
-                    const fillOpacity =
-                        f.properties?.['fill-opacity']
-                        ?? 0.2;
-
                     return {
                         id: `beam-${index}`,
 
@@ -403,12 +484,13 @@ export class MapComponent {
                         ),
 
                         properties: f.properties,
+                        isActive: false,
 
                         style: {
                             stroke: [{
                                 color: '#00ffff',
                                 width: 2,
-                                opacity: 1
+                                opacity: 0.8
                             }],
                             fill: this.withAlpha(
                                 '#0000ff',
@@ -417,6 +499,9 @@ export class MapComponent {
                         }
                     };
                 });
+
+
+                this.rebuildBeamStyles();
                 this.cdr.markForCheck();
 
             });
@@ -694,6 +779,7 @@ export class MapComponent {
             .dragLocation$
             .next(coordinates);
 
+
         this.cdr.markForCheck();
 
     };
@@ -701,6 +787,11 @@ export class MapComponent {
     public onSearchMarkerDragEnd = (
         coordinates: any
     ): void => {
+
+
+        this.updateActiveBeam(
+            coordinates
+        );
 
         this._searchService
             .reverseGeocode(coordinates)
