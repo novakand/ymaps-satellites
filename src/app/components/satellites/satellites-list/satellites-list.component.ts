@@ -79,7 +79,7 @@ export class SatellitesListComponent implements OnInit {
     public selectedSatelliteKey: string | null = null;
     //// 'yamal-601'
     private readonly MULTI_COLOR_SATELLITES = [
-        ''
+        'amu-7','express-103','y401'
     ];
     public visibleSatellites = new Set<string>();
 

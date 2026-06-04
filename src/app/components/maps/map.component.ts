@@ -114,6 +114,9 @@ export class MapComponent {
     };
 
 
+
+
+
     private getBandColor(
         band?: 'Ka' | 'Ku'
     ): string {
@@ -631,33 +634,80 @@ export class MapComponent {
 
     }
 
+    // private _watchCoverage(): void {
+
+    //     this.mapService.coverageFeatures$
+    //         .pipe(
+    //             takeUntil(this._destroy$)
+    //         )
+    //         .subscribe(data => {
+
+    //             this.coverageFeatures =
+    //                 data.features.map((f, index) => {
+    //                     console.log(f, data)
+    //                     const color =
+    //                         data.multiColor
+    //                             ? this.getCoverageColor(index)
+    //                             : this.getBandColor(
+    //                                 data.band
+    //                             );
+
+    //                     return {
+    //                         id: `coverage-${index}`,
+
+    //                         geometry: this.normalizeGeometry(
+    //                             structuredClone(f.geometry)
+    //                         ),
+
+    //                         properties: f.properties,
+
+    //                         style: {
+    //                             stroke: [{
+    //                                 color,
+    //                                 width: this.DEFAULT_POLYGON_STYLE.strokeWidth,
+    //                                 opacity: this.DEFAULT_POLYGON_STYLE.strokeOpacity
+    //                             }],
+    //                             fill: this.withAlpha(
+    //                                 color,
+    //                                 this.DEFAULT_POLYGON_STYLE.fillOpacity
+    //                             )
+    //                         }
+    //                     };
+
+    //                 });
+
+    //             this.cdr.markForCheck();
+
+    //         });
+
+    // }
+
     private _watchCoverage(): void {
-
         this.mapService.coverageFeatures$
-            .pipe(
-                takeUntil(this._destroy$)
-            )
+            .pipe(takeUntil(this._destroy$))
             .subscribe(data => {
-
-                this.coverageFeatures =
-                    data.features.map((f, index) => {
-                        console.log(f, index)
-                        const color =
-                            data.multiColor
-                                ? this.getCoverageColor(index)
-                                : this.getBandColor(
-                                    data.band
-                                );
+                this.coverageFeatures = data.features.map((f, index) => {
+                    if (data.multiColor) {
+                        return {
+                            id: `coverage-${index}`,
+                            geometry: this.normalizeGeometry(structuredClone(f.geometry)),
+                            properties: f.properties,
+                            style: {
+                                stroke: [{
+                                    color: '#00ffff',
+                                    width: 2,
+                                    opacity: 0.8
+                                }],
+                                fill: this.withAlpha('#0000ff', 0.15)
+                            }
+                        };
+                    } else {
+                        const color = this.getBandColor(data.band);
 
                         return {
                             id: `coverage-${index}`,
-
-                            geometry: this.normalizeGeometry(
-                                structuredClone(f.geometry)
-                            ),
-
+                            geometry: this.normalizeGeometry(structuredClone(f.geometry)),
                             properties: f.properties,
-
                             style: {
                                 stroke: [{
                                     color,
@@ -670,13 +720,10 @@ export class MapComponent {
                                 )
                             }
                         };
-
-                    });
-
+                    }
+                });
                 this.cdr.markForCheck();
-
             });
-
     }
 
     private normalizeGeometry(

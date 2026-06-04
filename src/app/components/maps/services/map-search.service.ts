@@ -19,7 +19,7 @@ export class MapSearchService {
             null
         );
 
-    private readonly API_KEY = '042405c2-12f5-4b78-9580-cb5ea1d7c106';
+    private readonly API_KEY = 'f3d86a8b-3fca-4a99-8e07-c4260e6e4dbc';
 
     constructor(private http: HttpClient) { }
 
