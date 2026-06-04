@@ -52,10 +52,10 @@ export class MapLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
                 if (this.isSmallScreen) {
 
-                    this.layoutService
-                        .setMapLayoutMode(
-                            'stack'
-                        );
+                    // this.layoutService
+                    //     .setMapLayoutMode(
+                    //         'stack'
+                    //     );
 
                     this.layoutService
                         .isMapSidebar

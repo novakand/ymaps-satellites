@@ -641,6 +641,7 @@ export class MapComponent {
 
                 this.coverageFeatures =
                     data.features.map((f, index) => {
+                        console.log(f, index)
                         const color =
                             data.multiColor
                                 ? this.getCoverageColor(index)

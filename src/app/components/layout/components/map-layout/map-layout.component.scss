@@ -121,34 +121,23 @@
 
 .layout-map-stack .layout-map-sidebar {
   position: relative !important;
-
   width: 100% !important;
   max-height: 52dvh;
-
   opacity: 1 !important;
   visibility: visible !important;
-
   z-index: 1;
 }
 
 .layout-map-stack .layout-map-content-wrapper {
-
   width: 100% !important;
-
   margin-left: 0 !important;
-
-  // height: 500px !important;
   max-height: 52vh;
-
   flex-shrink: 0;
 }
 
 .layout-map-stack .layout-map-content {
-
   position: relative !important;
-
   width: 100% !important;
-
   height: 100% !important;
   min-height: 48dvh;
 }
@@ -206,26 +195,23 @@ div.layout-map-stack div.c-map {
 }
 
 
-// Стили для layout-map-stack на мобильных
 .layout-map-stack {
   display: flex;
   flex-direction: column;
-  height: 100dvh !important; // Полная высота экрана
-  overflow: hidden !important; // Убираем скролл у контейнера
+  height: 100dvh !important;
+  overflow: hidden !important;
   position: relative;
 
-  // Сайдбар со списком спутников
   .layout-map-sidebar {
     position: relative !important;
     width: 100% !important;
     flex-shrink: 0;
     overflow-y: auto;
-    max-height: 45dvh; // Ограничиваем высоту списка
+    max-height: 45dvh;
     opacity: 1 !important;
     visibility: visible !important;
     z-index: 1;
 
-    // Индикатор свайпа
     &::after {
       content: '';
       display: block;
@@ -240,43 +226,39 @@ div.layout-map-stack div.c-map {
     }
   }
 
-  // Обертка для карты
   .layout-map-content-wrapper {
-    flex: 1 !important; // Занимает оставшееся пространство
+    flex: 1 !important;
     width: 100% !important;
     margin-left: 0 !important;
     position: relative;
-    min-height: 0; // Важно для flex-контейнера
+    min-height: 0;
     border-top: 1px solid var(--surface-border);
   }
 
-  // Контент карты
+
   .layout-map-content {
     position: relative !important;
     width: 100% !important;
     height: 100% !important;
   }
 
-  // Сама карта
   div.c-map {
     position: absolute !important;
     top: 0;
     left: 0;
     width: 100% !important;
-    height: 100% !important; // Теперь наследует высоту от родителя
+    height: 100% !important;
   }
 }
 
-// Стили для разных размеров экрана
 @media (max-width: 768px) {
   .layout-map-stack {
     .layout-map-sidebar {
-      max-height: 48dvh; // На совсем маленьких экранах список меньше
+      max-height: 48dvh;
     }
   }
 }
 
-// Альтернативный вариант: фиксированное соотношение
 @media (min-width: 769px) and (max-width: 1024px) {
   .layout-map-stack {
     .layout-map-sidebar {
@@ -285,7 +267,6 @@ div.layout-map-stack div.c-map {
   }
 }
 
-// Глобальные стили для корректной работы
 ::ng-deep {
   body {
     overflow: hidden;
