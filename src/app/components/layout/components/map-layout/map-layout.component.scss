@@ -204,3 +204,116 @@ div.layout-map-stack div.c-map {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
 }
+
+
+// Стили для layout-map-stack на мобильных
+.layout-map-stack {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh !important; // Полная высота экрана
+  overflow: hidden !important; // Убираем скролл у контейнера
+  position: relative;
+
+  // Сайдбар со списком спутников
+  .layout-map-sidebar {
+    position: relative !important;
+    width: 100% !important;
+    flex-shrink: 0;
+    overflow-y: auto;
+    max-height: 45dvh; // Ограничиваем высоту списка
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 1;
+
+    // Индикатор свайпа
+    &::after {
+      content: '';
+      display: block;
+      width: 54px;
+      height: 6px;
+      margin: 8px auto;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.18);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      bottom: 8px;
+    }
+  }
+
+  // Обертка для карты
+  .layout-map-content-wrapper {
+    flex: 1 !important; // Занимает оставшееся пространство
+    width: 100% !important;
+    margin-left: 0 !important;
+    position: relative;
+    min-height: 0; // Важно для flex-контейнера
+    border-top: 1px solid var(--surface-border);
+  }
+
+  // Контент карты
+  .layout-map-content {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  // Сама карта
+  div.c-map {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important; // Теперь наследует высоту от родителя
+  }
+}
+
+// Стили для разных размеров экрана
+@media (max-width: 768px) {
+  .layout-map-stack {
+    .layout-map-sidebar {
+      max-height: 48dvh; // На совсем маленьких экранах список меньше
+    }
+  }
+}
+
+// Альтернативный вариант: фиксированное соотношение
+@media (min-width: 769px) and (max-width: 1024px) {
+  .layout-map-stack {
+    .layout-map-sidebar {
+      max-height: 35dvh;
+    }
+  }
+}
+
+// Глобальные стили для корректной работы
+::ng-deep {
+  body {
+    overflow: hidden;
+    height: 100dvh;
+    position: fixed;
+    width: 100%;
+  }
+
+  .layout-content-wrapper {
+    height: 100dvh !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+
+  .layout-content {
+    padding: 0 !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  .layout-content-inner {
+    height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  .layout-map-container {
+    height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+}
