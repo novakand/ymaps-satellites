@@ -9,7 +9,7 @@
 
   .layout-content-wrapper .layout-content {
     overflow: auto;
-    height: calc(100vh - 8.5rem);
+    height: calc(100dvh - 8.5rem);
   }
 
 }
@@ -174,7 +174,6 @@
   height: 48dvh !important;
 }
 
-
 .layout-map-scroll-cue {
   display: none;
 }
@@ -199,26 +198,6 @@
 .layout-map-stack .layout-map-content-wrapper {
   border-top: 1px solid var(--surface-border);
 }
-
-// .layout-map-stack .layout-map-scroll-cue {
-
-//   display: block;
-
-//   width: 54px;
-//   height: 6px;
-
-//   margin: 0.75rem auto 1rem;
-
-//   border-radius: 999px;
-
-//   background: rgba(0, 0, 0, 0.18);
-
-//   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-//   pointer-events: none;
-
-//   flex-shrink: 0;
-// }
 
 .layout-map-stack .layout-map-sidebar {
 
