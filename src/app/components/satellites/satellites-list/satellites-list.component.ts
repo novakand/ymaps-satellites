@@ -289,6 +289,13 @@ export class SatellitesListComponent implements OnInit {
                                 beamNo
                                 ];
 
+
+                            const displayLevel =
+                                this.getDisplayLevel(
+                                    satellite.key,
+                                    level
+                                );
+
                             return {
 
                                 beam: beamNo,
@@ -298,7 +305,8 @@ export class SatellitesListComponent implements OnInit {
                                 level,
 
                                 levelLabel:
-                                    props['name'] ?? '—',
+                                    displayLevel,
+
 
                                 code:
                                     info?.code ?? '—',
@@ -580,6 +588,24 @@ export class SatellitesListComponent implements OnInit {
 
             });
 
+    }
+
+
+
+    private getDisplayLevel(
+        satKey: string,
+        level: number
+    ): string {
+
+        if (!Number.isFinite(level)) {
+            return '—';
+        }
+
+        if (satKey === 'yamal-601') {
+            return `${level - 44} dB`;
+        }
+
+        return `${level} dB`;
     }
 
     public selectSatellite(
