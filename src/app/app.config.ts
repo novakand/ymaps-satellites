@@ -13,7 +13,7 @@ import { ErrorInterceptor } from './interceptors/http-error.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideYConfig, YConfig } from 'angular-yandex-maps-v3';
 const config: YConfig = {
-  apikey: '042405c2-12f5-4b78-9580-cb5ea1d7c106',
+  apikey: '1d1a8c8c-e6d8-4292-b184-71945468275e',
   lang: 'ru_RU'
 };
 

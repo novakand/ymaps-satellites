@@ -19,7 +19,7 @@ export class MapSearchService {
             null
         );
 
-    private readonly API_KEY = 'f3d86a8b-3fca-4a99-8e07-c4260e6e4dbc';
+    private readonly API_KEY = '86b21bb6-3702-4519-bd25-93f8cfa92b78';
 
     constructor(private http: HttpClient) { }
 
@@ -31,7 +31,7 @@ export class MapSearchService {
     ): Observable<any[]> {
 
         const params: any = {
-            apikey: 'cc9effc6-6507-4834-97f6-7384e3cd2df3',
+            apikey: '23b76e0e-63d3-48f0-a3b5-e607d7c078e9',
             text,
             types,
             results: limit
