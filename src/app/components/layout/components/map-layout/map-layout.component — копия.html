@@ -8,16 +8,10 @@
         />
         <div
             class="layout-map-container"
-            [class.layout-map-stack]="
-        mapLayoutMode() === 'stack'
-        && isMapSidebar()
-    "
+            style="width: 100%; height: 100%;"
         >
             <button
-                *ngIf="
-        isSidebarButton &&
-        mapLayoutMode() !== 'stack'
-    "
+                *ngIf="isSidebarButton"
                 class="map-config-button p-link"
                 [ngClass]="{
             'ml-0!': !isMapSidebar(),
@@ -41,8 +35,6 @@
             >
 
                 <router-outlet (activate)="onActivateRouterOutlet()"></router-outlet>
-
-
 
             </div>
             <div

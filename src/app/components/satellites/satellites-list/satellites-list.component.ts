@@ -604,6 +604,13 @@ export class SatellitesListComponent implements OnInit {
         if (satKey === 'yamal-601') {
             return `${level - 44} dB`;
         }
+        if (satKey === 'amu-7') {
+            return `${level + 10} dB`;
+        }
+
+        if (satKey === 'am5') {
+            return `${level + 10} dB`;
+        }
 
         return `${level} dB`;
     }
@@ -746,6 +753,55 @@ export class SatellitesListComponent implements OnInit {
 
     public onOpen(): void {
         this.visible = !this.visible;
+    }
+
+
+    public toggleMapView(): void {
+
+        const isSidebar =
+            this.layoutService.isMapSidebar();
+
+        const mode =
+            this.layoutService.mapLayoutMode();
+
+        // Панель -> Разделение
+        if (
+            mode === 'overlay' &&
+            isSidebar
+        ) {
+
+            this.layoutService
+                .setMapLayoutMode(
+                    'stack'
+                );
+
+            return;
+
+        }
+
+        // Разделение -> Карта
+        if (
+            mode === 'stack'
+        ) {
+
+            this.layoutService
+                .setMapLayoutMode(
+                    'overlay'
+                );
+
+            this.layoutService
+                .isMapSidebar
+                .set(false);
+
+            return;
+
+        }
+
+        // Карта -> Панель
+        this.layoutService
+            .isMapSidebar
+            .set(true);
+
     }
 
     public toggleSideBar(): void {

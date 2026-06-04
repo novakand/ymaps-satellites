@@ -13,9 +13,22 @@
         class="text-xl"
         [rounded]="true"
         badgeSeverity="contrast"
-        (click)="toggleSideBar()"
+        (click)="toggleMapView()"
         size="large"
-        icon="pi pi-map"
+        [pTooltip]="
+        layoutService.mapLayoutMode() === 'stack'
+            ? 'Карта на весь экран'
+            : layoutService.isMapSidebar()
+                ? 'Разделить'
+                : 'Панель на весь экран'
+    "
+        [icon]="
+    layoutService.mapLayoutMode() === 'stack'
+        ? 'pi pi-map'
+        : layoutService.isMapSidebar()
+            ? 'pi pi-equals'
+            : 'pi pi-list'
+"
         [text]="true"
       />
 

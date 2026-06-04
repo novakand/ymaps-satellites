@@ -73,6 +73,19 @@ export class LayoutService {
 
     public isMapSidebar = signal(true);
 
+    public mapLayoutMode =
+    signal<'overlay' | 'stack'>(
+        'overlay'
+    );
+
+    public setMapLayoutMode(
+    mode: 'overlay' | 'stack'
+): void {
+
+    this.mapLayoutMode.set(mode);
+
+}
+
     public newsActive = signal(false);
 
     private configUpdate = new Subject<any>();

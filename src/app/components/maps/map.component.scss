@@ -250,7 +250,8 @@
 
 .c-map {
   width: 100%;
-  height: 100dvh;
+  // height: 100dvh;
+  height: 100%;
   position: absolute;
   overflow: hidden;
   background: var(--p-overlay-modal-background);
